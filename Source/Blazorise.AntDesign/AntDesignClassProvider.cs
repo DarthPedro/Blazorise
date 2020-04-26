@@ -34,6 +34,8 @@ namespace Blazorise.AntDesign
 
         public override string Select() => "ant-select-selection-search-input";
 
+        public override string SelectMultiple() => null;
+
         public override string SelectSize( Size size ) => $"{Select()}-{ToSize( size )}";
 
         public override string SelectValidation( ValidationStatus validationStatus ) => ToValidationStatus( validationStatus );
@@ -154,11 +156,11 @@ namespace Blazorise.AntDesign
 
         #region Fields
 
-        public override string Fields() => "ant-row";
+        public override string Fields() => "ant-row ant-form-row";
 
         public override string FieldsBody() => null;
 
-        public override string FieldsColumn() => $"{Col()}";
+        public override string FieldsColumn() => $"{Column()}";
 
         #endregion
 
@@ -410,6 +412,18 @@ namespace Blazorise.AntDesign
 
         #endregion
 
+        #region Jumbotron
+
+        public override string Jumbotron() => "ant-hero";
+
+        public override string JumbotronBackground( Background background ) => $"ant-hero-{ToBackground( background )}";
+
+        public override string JumbotronTitle( JumbotronTitleSize jumbotronTitleSize ) => $"ant-display-{ToJumbotronTitleSize( jumbotronTitleSize )}";
+
+        public override string JumbotronSubtitle() => "ant-hero-subtitle";
+
+        #endregion
+
         #region Card
 
         public override string CardGroup() => "ant-card-group";
@@ -466,33 +480,7 @@ namespace Blazorise.AntDesign
 
         #endregion
 
-        #region Panel
-
-        public override string Panel() => null;
-
-        #endregion
-
-        #region Nav
-
-        public override string Nav() => "nav";
-
-        public override string NavItem() => "nav-item";
-
-        public override string NavLink() => "nav-link";
-
-        public override string NavTabs() => "nav-tabs";
-
-        public override string NavCards() => "nav-cards";
-
-        public override string NavPills() => "nav-pills";
-
-        public override string NavFill( NavFillType fillType ) => fillType == NavFillType.Justified ? "nav-justified" : "nav-fill";
-
-        public override string NavVertical() => "flex-column";
-
-        #endregion
-
-        #region Navbar
+        #region Bar
 
         public override string Bar() => "ant-menu ant-menu-root ant-menu-horizontal";
 
@@ -580,30 +568,43 @@ namespace Blazorise.AntDesign
 
         #endregion
 
-        #region Col
+        #region Column
 
-        public override string Col() => "ant-col";
+        public override string Column() => "ant-col";
 
-        public override string Col( ColumnWidth columnWidth, Breakpoint breakpoint, bool offset )
+        public override string Column( ColumnWidth columnWidth, Breakpoint breakpoint, bool offset )
         {
-            var baseClass = offset ? "offset" : Col();
+            var sb = new StringBuilder( Column() );
 
             if ( breakpoint != Blazorise.Breakpoint.None )
-            {
-                if ( columnWidth == Blazorise.ColumnWidth.None )
-                    return $"{baseClass}-{ToBreakpoint( breakpoint )}";
+                sb.Append( $"-{ToBreakpoint( breakpoint )}" );
 
-                return $"{baseClass}-{ToBreakpoint( breakpoint )}-{ToColumnWidth( columnWidth )}";
-            }
+            if ( offset )
+                sb.Append( "-offset" );
 
-            //if ( columnWidth == Blazorise.ColumnWidth.Auto )
-            //    return $"{baseClass}";
+            sb.Append( $"-{ToColumnWidth( columnWidth )}" );
 
-            return $"{baseClass}-{ToColumnWidth( columnWidth )}";
+            return sb.ToString();
         }
 
-        public override string Col( ColumnWidth columnWidth, IEnumerable<(Breakpoint breakpoint, bool offset)> rules ) =>
-            string.Join( " ", rules.Select( r => Col( columnWidth, r.breakpoint, r.offset ) ) );
+        public override string Column( ColumnWidth columnWidth, IEnumerable<(Breakpoint breakpoint, bool offset)> rules ) =>
+            string.Join( " ", rules.Select( r => Column( columnWidth, r.breakpoint, r.offset ) ) );
+
+        #endregion
+
+        #region Display
+
+        public override string Display( DisplayType displayType, Breakpoint breakpoint, DisplayDirection direction )
+        {
+            var baseClass = breakpoint != Breakpoint.None
+                ? $"ant-display-{ToBreakpoint( breakpoint )}-{ToDisplayType( displayType )}"
+                : $"ant-display-{ToDisplayType( displayType )}";
+
+            if ( direction != DisplayDirection.None )
+                return $"{baseClass} ant-flex-{ToDisplayDirection( direction )}";
+
+            return baseClass;
+        }
 
         #endregion
 
@@ -767,6 +768,8 @@ namespace Blazorise.AntDesign
 
         public override string TableRowCellTextAlignment( TextAlignment textAlignment ) => $"ant-text-{ToTextAlignment( textAlignment )}";
 
+        public override string TableResponsive() => "ant-table-responsive";
+
         #endregion
 
         #region Badge
@@ -833,7 +836,7 @@ namespace Blazorise.AntDesign
 
         public override string FigureSize( FigureSize figureSize ) => $"ant-figure-is-{ToFigureSize( figureSize )}";
 
-        public override string FigureImage() => "ant-figure-img";
+        public override string FigureImage() => "ant-figure-img ant-figure-img-fluid";
 
         public override string FigureImageRounded() => "ant-figure-rounded";
 

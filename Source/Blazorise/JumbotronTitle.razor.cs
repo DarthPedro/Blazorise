@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Components;
 
 namespace Blazorise
 {
-    public partial class Panel : BaseContainerComponent
+    public partial class JumbotronTitle : BaseComponent
     {
         #region Members
+
+        private JumbotronTitleSize size = JumbotronTitleSize.Is1;
 
         #endregion
 
@@ -18,7 +20,7 @@ namespace Blazorise
 
         protected override void BuildClasses( ClassBuilder builder )
         {
-            builder.Append( ClassProvider.Panel() );
+            builder.Append( ClassProvider.JumbotronTitle( Size ) );
 
             base.BuildClasses( builder );
         }
@@ -26,6 +28,20 @@ namespace Blazorise
         #endregion
 
         #region Properties
+
+        [Parameter]
+        public JumbotronTitleSize Size
+        {
+            get => size;
+            set
+            {
+                size = value;
+
+                DirtyClasses();
+            }
+        }
+
+        [Parameter] public RenderFragment ChildContent { get; set; }
 
         #endregion
     }
